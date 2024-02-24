@@ -10,6 +10,24 @@ struct syntactic{
     unsigned int errors = 0;
 };
 
+void factor2(struct syntactic* synt);
+
+void factor(struct syntactic* synt);
+
+void term2(struct syntactic* synt);
+
+void term(struct syntactic* synt);
+
+void simple_expression2(struct syntactic* synt);
+
+void simple_expression(struct syntactic* synt);
+
+void expression_list2(struct syntactic* synt);
+
+void expression_list(struct syntactic* synt);
+
+void expression(struct syntactic* synt);
+
 void command(struct syntactic* synt);
 
 void command_list2(struct syntactic* synt);

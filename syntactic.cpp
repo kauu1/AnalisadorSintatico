@@ -20,8 +20,168 @@ void syntactic_init(struct syntactic *synt, std::string file_path){
     //synt->error_messages.clear();
 }
 
-void command(struct syntactic* synt){
+void factor(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].type == Identifier){
+        synt->position++;
+        if(synt->lexical_analyser_results[synt->position].token.find("(") != std::string::npos){
+            expression_list(synt);
 
+            if(synt->lexical_analyser_results[synt->position].token.find(")") != std::string::npos){
+                synt->position++;
+            }
+            else{
+                synt->errors++;
+                std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \")\"\n";
+            }
+        }
+    }
+
+    if(synt->lexical_analyser_results[synt->position].type == Integer ||
+    synt->lexical_analyser_results[synt->position].type == Float ||
+    synt->lexical_analyser_results[synt->position].type == Boolean){
+        synt->position++;
+    }
+
+    if(synt->lexical_analyser_results[synt->position].token.find("(") != std::string::npos){
+        synt->position++;
+
+        expression(synt);
+
+        if(synt->lexical_analyser_results[synt->position].token.find(")") != std::string::npos){
+            synt->position++;
+        }
+        else{
+            synt->errors++;
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \")\"\n";
+        }
+    }
+
+    if(synt->lexical_analyser_results[synt->position].token.find("not") != std::string::npos){
+        synt->position++;
+        factor(synt);
+    }
+      
+
+}
+
+void term(struct syntactic* synt){
+    factor(synt);
+
+    if(synt->lexical_analyser_results[synt->position].type == Relational_operator){
+        synt->position++;
+        term(synt);
+    }
+}
+
+void simple_expression2(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].type == Aditive_operator){
+        synt->position++;
+        term(synt);
+        simple_expression2(synt);
+    }
+
+}
+
+void simple_expression(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].token.find("+") != std::string::npos
+    || synt->lexical_analyser_results[synt->position].token.find("-") != std::string::npos){
+
+        synt->position++;
+        term(synt);
+        simple_expression2(synt);
+    }else {
+        term(synt);
+        simple_expression2(synt);
+    }
+
+}
+
+void expression(struct syntactic* synt){
+    simple_expression(synt);
+
+    if(synt->lexical_analyser_results[synt->position].type == Relational_operator){
+        synt->position++;
+        simple_expression(synt);
+    }
+
+}
+
+/*
+void expression_list2(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].token.find("end") != std::string::npos){
+        return;
+    }else {
+        expression(synt);
+        expression_list2(synt);
+    }
+}*/
+
+void expression_list(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].token.find("end") != std::string::npos){
+        return;
+    }else {
+        expression(synt);
+        expression_list(synt);
+    }
+}
+
+void command(struct syntactic* synt){
+    if(synt->lexical_analyser_results[synt->position].type == Identifier){
+        synt->position++;
+
+        if(synt->lexical_analyser_results[synt->position].token.find(":=") != std::string::npos){
+            synt->position++;
+            expression(synt);
+        }
+        else {
+            if(synt->lexical_analyser_results[synt->position].token.find("(")){
+                synt->position++;
+                expression_list(synt);
+            }else {
+                
+            }
+            
+        }
+    }
+
+    if(synt->lexical_analyser_results[synt->position].token.find("begin") != std::string::npos){
+        compost_command(synt);
+    }
+
+    if(synt->lexical_analyser_results[synt->position].token.find("if") != std::string::npos){
+        synt->position++;
+        expression(synt);
+
+        if(synt->lexical_analyser_results[synt->position].token.find("then") != std::string::npos){
+        }else {
+            synt->errors++;
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \";\"\n";
+        }
+
+        synt->position++;
+
+        command(synt);
+
+        if(synt->lexical_analyser_results[synt->position].token.find("else") != std::string::npos){
+
+            synt->position++;
+            command(synt);
+        }
+    }
+
+    if(synt->lexical_analyser_results[synt->position].token.find("while") != std::string::npos){
+        synt->position++;
+        expression(synt);
+
+        if(synt->lexical_analyser_results[synt->position].token.find("do") != std::string::npos){}
+        else{
+            synt->errors++;
+            std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"do\"\n";
+        }
+
+        synt->position++;
+        command(synt);
+    }
 }
 
 void command_list2(struct syntactic* synt){
@@ -36,7 +196,7 @@ void command_list2(struct syntactic* synt){
     if(synt->lexical_analyser_results[synt->position].token.find(";") != std::string::npos){}
     else {
         synt->errors++;
-        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"begin\"\n";
+        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \";\"\n";
     }
 
     synt->position++;
@@ -49,7 +209,7 @@ void command_list(struct syntactic* synt){
     if(synt->lexical_analyser_results[synt->position].token.find(";") != std::string::npos){}
     else {
         synt->errors++;
-        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"begin\"\n";
+        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \";\"\n";
     }
 
     synt->position++;
@@ -179,7 +339,6 @@ void subprograms_declaration(struct syntactic *synt){
 
         subprograms_declaration(synt);
     }
-    synt->position++;
 }
 
 void identifier_list2(struct syntactic* synt){
@@ -261,31 +420,35 @@ void variable_declaration(struct syntactic *synt){
 
 void program(struct syntactic *synt){
     if(synt->lexical_analyser_results[synt->position].token.find("program") != std::string::npos){
+        synt->position++;
     }else {
         synt->errors++;
         std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"program\"\n";
     }
-    
-    synt->position++;
 
     if(synt->lexical_analyser_results[synt->position].type == Identifier){
-
+        synt->position++;
     }else {
         synt->errors++;
         std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \"IDENTIFIER\"\n";
     }
 
-    synt->position++;
-
     if(synt->lexical_analyser_results[synt->position].token.find(";") != std::string::npos){
-
+        synt->position++;
     }else {
         synt->errors++;
         std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \";\"\n";
+        synt->position++;
     }
-
-    synt->position++;
 
     variable_declaration(synt);
     subprograms_declaration(synt);
+
+    compost_command(synt);
+
+    if(synt->lexical_analyser_results[synt->position].token.find(".") != std::string::npos){}
+    else{
+        synt->errors++;
+        std::cerr << "Line " << synt->lexical_analyser_results[synt->position].line << " ERRO: Expected \".\"\n";
+    }
 }

@@ -14,7 +14,8 @@ enum Type{
     Atribution,
     Float,
     Comment_open,
-    Comment_closed   
+    Comment_closed,
+    Boolean 
 };
 
 struct lexical{

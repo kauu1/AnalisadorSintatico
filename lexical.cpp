@@ -80,6 +80,7 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
     std::vector<std::string>delimiters = {";", ".", "(", ")", ","};
 
     //std::string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \t\n{}();:.(),=<>+-*/";
+    std::vector<std::string> boolean = {"true", "false"};
 
     std::string atribution = ":=";
 
@@ -167,8 +168,14 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     current_state = 0;
 
                     word.pop_back();
+                    if(in_array(word, boolean)){
+                        aux.line = line;
+                        aux.token = word;
+                        aux.type = Boolean;
+                        result.push_back(aux);
 
-                    if(in_array(word, key_words)){
+                    }
+                    else if(in_array(word, key_words)){
                         aux.line = line;
                         aux.token = word;
                         aux.type = Key_word;
