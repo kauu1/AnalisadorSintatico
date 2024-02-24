@@ -26,9 +26,8 @@ int check_char(char c, unsigned int line, unsigned int current_state){
         }
     }
     if(current_state != 1){
-        return -1;
-    }   
-
+        std::cerr << "Erro: '" << c << "' does not belong to the language alphabet in line: " << line << std::endl;
+    }
     return 0;
     /*
     if(alphabet.find(c)==std::string::npos){
@@ -127,8 +126,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     comment_open_line = line;
                     ++comment[0];
                     aux.line = line;
-                    aux.name = "{";
-                    aux.token = "comment_open";
+                    aux.token = "{";
+                    aux.type = Comment_open;
                     result.push_back(aux);
                 }
 
@@ -154,8 +153,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     current_state = 0;
                     ++comment[1];
                     aux.line = line;
-                    aux.name = "}";
-                    aux.token = "comment_closed";
+                    aux.token = "}";
+                    aux.type= Comment_closed;
                     result.push_back(aux);
                 }
                 break;
@@ -171,29 +170,29 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
 
                     if(in_array(word, key_words)){
                         aux.line = line;
-                        aux.name = word;
-                        aux.token = "key_word";
+                        aux.token = word;
+                        aux.type = Key_word;
                         result.push_back(aux);
 
 
                     }else if (word.find("and")!=std::string::npos) {
                         aux.line = line;
-                        aux.name = word;
-                        aux.token = "multiplicative_operator";
+                        aux.token = word;
+                        aux.type = Multiplicative_operator;
                         result.push_back(aux);
 
 
                     }else if (word.find("or")!=std::string::npos) {
                         aux.line = line;
-                        aux.name = word;
-                        aux.token = "aditive_operator";
+                        aux.token = word;
+                        aux.type = Aditive_operator;
                         result.push_back(aux);
 
 
                     }else{
                         aux.line = line;
-                        aux.name = word;
-                        aux.token = "identifier";
+                        aux.token = word;
+                        aux.type = Identifier;
                         result.push_back(aux);
 
                     }
@@ -212,8 +211,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     current_state = 0;
                     word.pop_back();
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "integer";
+                    aux.token = word;
+                    aux.type = Integer;
                     result.push_back(aux);
                     program_template.unget();
                 }
@@ -225,8 +224,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                 word.pop_back();
                 program_template.unget();
                 aux.line = line;
-                aux.name = word;
-                aux.token = "delimiter";
+                aux.token = word;
+                aux.type = Delimiter;
                 result.push_back(aux);
                 break;
             
@@ -237,15 +236,15 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                 word += c;
                 if(in_array(word, relacional_operators2)){
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "relational_operator";
+                    aux.token = word;
+                    aux.type = Relational_operator;
                     result.push_back(aux);
                 }else{
                     word.pop_back();
                     program_template.unget();
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "relational_operator";
+                    aux.token = word;
+                    aux.type = Relational_operator;
                     result.push_back(aux);
                 }
                 break;
@@ -256,8 +255,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                 word.pop_back();
                 program_template.unget();
                 aux.line = line;
-                aux.name = word;
-                aux.token = "aditive_operator";
+                aux.token = word;
+                aux.type = Aditive_operator;
                 result.push_back(aux);
                 break;
             
@@ -267,8 +266,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                 word.pop_back();
                 program_template.unget();
                 aux.line = line;
-                aux.name = word;
-                aux.token = "multiplicative_operator";
+                aux.token = word;
+                aux.type = Multiplicative_operator;
                 result.push_back(aux);
                 break;
             
@@ -281,8 +280,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     word.pop_back();
                     program_template.unget();
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "attribution";
+                    aux.token = word;
+                    aux.type = Atribution;
                     result.push_back(aux);
                 }else {
                     word.pop_back();
@@ -290,8 +289,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     word.pop_back();
                     program_template.unget();
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "delimiter";
+                    aux.token = word;
+                    aux.type = Delimiter;
                     result.push_back(aux);
                 }
                 break;
@@ -306,8 +305,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     word.pop_back();
                     program_template.unget();
                     aux.line = line;
-                    aux.name = word;
-                    aux.token = "float";
+                    aux.token = word;
+                    aux.type = Float;
                     result.push_back(aux);
                 }
                 break;
@@ -331,7 +330,7 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
 void print_lexical_analyser(std::vector<struct lexical> *analysed){
     if(analysed){
         for(auto element : (*analysed)){
-            std::cout << element.line << ' ' << element.name << ' ' << element.token << std::endl;
+            std::cout << element.line << ' ' << element.token << ' ' << element.type << std::endl;
         }
     }
 }

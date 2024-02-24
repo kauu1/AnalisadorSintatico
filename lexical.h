@@ -1,13 +1,26 @@
 #pragma once 
+#include <regex>
 #include <string>
 #include <vector>
 
+enum Type{
+    Key_word,
+    Multiplicative_operator,
+    Aditive_operator,
+    Relational_operator,
+    Integer,
+    Identifier,
+    Delimiter,
+    Atribution,
+    Float,
+    Comment_open,
+    Comment_closed   
+};
+
 struct lexical{
     int line;
-    std::string name;
     std::string token;
-    int qtd_error;
-    std::string error_messages;
+    enum Type type;
 };
 
 std::vector<struct lexical> lexical_analyser(std::string);
