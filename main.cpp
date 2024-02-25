@@ -13,7 +13,7 @@ int main(){
 
     syntactic_init(analyser, file_path);
 
-    print_lexical_analyser(&(analyser->lexical_analyser_results));
+    //print_lexical_analyser(&(analyser->lexical_analyser_results));
 
     program(analyser);
 }

@@ -26,7 +26,7 @@ int check_char(char c, unsigned int line, unsigned int current_state){
         }
     }
     if(current_state != 1){
-        std::cerr << "Erro: '" << c << "' does not belong to the language alphabet in line: " << line << std::endl;
+        std::cerr << "Line " << line << " "<< c << " does not belong to the language alphabet\n";
     }
     return 0;
     /*
@@ -126,10 +126,6 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                     current_state = 1;
                     comment_open_line = line;
                     ++comment[0];
-                    aux.line = line;
-                    aux.token = "{";
-                    aux.type = Comment_open;
-                    result.push_back(aux);
                 }
 
                 else if (letters.find(word)!=std::string::npos) current_state = 2;
@@ -153,10 +149,6 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
                 if(word.back() == '}') {
                     current_state = 0;
                     ++comment[1];
-                    aux.line = line;
-                    aux.token = "}";
-                    aux.type= Comment_closed;
-                    result.push_back(aux);
                 }
                 break;
 
