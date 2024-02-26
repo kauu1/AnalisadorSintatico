@@ -1,11 +1,11 @@
-program Test3;
+program Test4;
 var
-   NUMERO : integer;
-begin
-   NUMERO = - 3 * 5 + 7 - 9;
-   if (NUMERO >= 20) and (NUMERO <=90) then
-      NUMERO = 10 * 3   
-   else NUMERO = 10 / 3  
-end.
+    A, B, R, I : integer;
 
-{utilizar comentario nao fechado para ver se o erro está sendo capturado}
+begin
+    while (I <= 5) do
+    begin
+        A := A+1;
+        I(A, B, C +A, 303);
+    end
+end.

@@ -1,4 +1,5 @@
 #include <cstddef>
+#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -29,15 +30,6 @@ int check_char(char c, unsigned int line, unsigned int current_state){
         std::cerr << "Line " << line << " "<< c << " does not belong to the language alphabet\n";
     }
     return 0;
-    /*
-    if(alphabet.find(c)==std::string::npos){
-        if(current_state != 1){
-            std::cerr << "Erro: '" << c << "' does not belong to the language alphabet in line: " << line << std::endl;
-        }
-        return 0;
-    }else{
-        return 1;
-    }*/
 }
 
 
@@ -321,6 +313,15 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
     }
 
     program_template.close();
+
+    program_template.get(c);
+
+    if(c == '.'){
+        aux.line = line;
+        aux.token = ".";
+        aux.type = Delimiter;
+        result.push_back(aux);
+    }
 
     return result;
 }

@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <ostream>
@@ -19,4 +20,8 @@ int main(int argc, char *argv[]){
     if(analyser->errors > 0){
         std::cerr << "Reported " << analyser->errors << " errors" << std::endl;
     }
+
+    print_lexical_analyser(&analyser->lexical_analyser_results);
+    free(analyser);
+    
 }

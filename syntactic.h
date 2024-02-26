@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iterator>
 #include <string>
 #include <vector>
 #include "lexical.h"
@@ -9,6 +10,10 @@ struct syntactic{
     unsigned int position;
     unsigned int errors = 0;
 };
+
+void next(struct syntactic* synt);
+
+void procedure_activation(struct syntactic* synt);
 
 void factor2(struct syntactic* synt);
 
