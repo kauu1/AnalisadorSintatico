@@ -49,9 +49,8 @@ std::vector<struct lexical> lexical_analyser(std::string file_path){
     std::ifstream program_template;
     program_template.open(file_path, std::ifstream::in);
 
-    if(program_template.is_open()){
-        std::cout << "File opened successfully" << std::endl;
-    }else{
+    if(program_template.is_open()){}
+    else{
         std::cerr << "Cound not find suitable file" << std::endl;
         return result;
     }
